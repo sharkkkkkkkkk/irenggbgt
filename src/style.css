@@ -1,0 +1,14 @@
+:root { --bg:#121212; --panel:#1e1e1e; --primary:#8a2be2; --text:#fff; }
+body { margin:0; font-family:sans-serif; background:var(--bg); color:var(--text); display:flex; height:100vh; overflow:hidden; }
+#loginOverlay { position:fixed; inset:0; background:#000; display:flex; justify-content:center; align-items:center; z-index:99; }
+.login-box { background:var(--panel); padding:30px; border-radius:10px; text-align:center; border:1px solid var(--primary); }
+.sidebar { width:200px; background:var(--panel); padding:20px; display:flex; flex-direction:column; gap:10px; }
+.sidebar li { padding:10px; cursor:pointer; border-radius:5px; transition:0.3s; }
+.sidebar li:hover, .sidebar li.active { background:var(--primary); }
+main { flex:1; padding:30px; overflow-y:auto; }
+input, select, textarea { width:100%; padding:10px; margin-bottom:10px; background:#333; border:none; color:#fff; }
+button { background:var(--primary); color:#fff; border:none; padding:10px 20px; cursor:pointer; width:100%; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:20px; }
+.card { background:var(--panel); padding:15px; border-radius:8px; }
+table { width:100%; border-collapse:collapse; margin-top:20px; }
+th, td { padding:10px; text-align:left; border-bottom:1px solid #333; }
