@@ -14,7 +14,7 @@
     <div class="glass-card login-box">
       <div class="icon-lock"><i class="fas fa-fingerprint"></i></div>
       <h2>Secured Access</h2>
-      <p>Masukkan Kunci Akses Anda</p>
+      <p>Masukkan Password Akses</p>
       <input type="password" id="passInput" placeholder="Password..." />
       <button onclick="login()" class="btn-glow">Buka Dashboard</button>
       <p id="errorMsg" class="error-text">Password Salah!</p>
@@ -33,20 +33,21 @@
         <li onclick="nav('recap')"><i class="fas fa-list-alt"></i> Database</li>
       </ul>
       <div class="user-profile">
-        <span>Admin Mode</span>
+        <small>Admin Mode • v2.0</small>
       </div>
     </nav>
 
     <main>
+      
       <section id="input" class="fade-in">
         <div class="header-box">
           <h1>Input Data Baru</h1>
-          <p>Tambahkan target airdrop baru ke database.</p>
+          <p>Masukkan target airdrop atau tugas harian baru.</p>
         </div>
         <form id="addForm" class="glass-card form-container">
           <div class="form-group">
             <label>Nama Proyek</label>
-            <input type="text" id="nama" placeholder="Contoh: ZkSync Era" required>
+            <input type="text" id="nama" placeholder="Contoh: Monad, Berachain" required>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -60,18 +61,18 @@
               <label>Status</label>
               <select id="status">
                 <option value="Garap">🔥 Sedang Digarap</option>
-                <option value="Done">✅ Selesai / Landing</option>
                 <option value="Pending">⏳ Pending</option>
+                <option value="Done">✅ Selesai / Landing</option>
               </select>
             </div>
           </div>
           <div class="form-group">
-            <label>Deadline</label>
+            <label>Deadline (Opsional)</label>
             <input type="date" id="deadline">
           </div>
           <div class="form-group">
-            <label>Catatan / Link</label>
-            <textarea id="note" rows="3" placeholder="Link faucet, bridge, task..."></textarea>
+            <label>Catatan & Link</label>
+            <textarea id="note" rows="3" placeholder="Paste link faucet, bridge, atau panduan di sini..."></textarea>
           </div>
           <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan Data</button>
         </form>
@@ -80,7 +81,7 @@
       <section id="daily" style="display:none;" class="fade-in">
         <div class="header-box">
           <h1>Daily Routine</h1>
-          <p>Reset otomatis setiap jam 00:00 UTC.</p>
+          <p>Tugas ini akan reset otomatis setiap hari (00:00).</p>
         </div>
         <div id="dailyList" class="grid-container">
           </div>
@@ -89,16 +90,17 @@
       <section id="recap" style="display:none;" class="fade-in">
         <div class="header-box">
           <h1>Database Airdrop</h1>
-          <p>Kelola semua data garapan Anda.</p>
+          <p>List lengkap semua garapan.</p>
         </div>
         <div class="glass-card table-responsive">
           <table id="recapTable">
             <thead>
               <tr>
                 <th>Proyek</th>
-                <th>Kategori</th>
+                <th>Tipe</th>
                 <th>Status</th>
                 <th>Deadline</th>
+                <th>Catatan / Link</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -121,13 +123,13 @@
         <label>Status</label>
         <select id="editStatus">
           <option value="Garap">Sedang Digarap</option>
-          <option value="Done">Selesai</option>
           <option value="Pending">Pending</option>
+          <option value="Done">Selesai</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Catatan</label>
-        <textarea id="editNote" rows="3"></textarea>
+        <label>Catatan & Link</label>
+        <textarea id="editNote" rows="4"></textarea>
       </div>
       <div class="modal-actions">
         <button onclick="closeEdit()" class="btn-secondary">Batal</button>
