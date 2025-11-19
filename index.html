@@ -2,9 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Airdrop Manager Pro</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="/src/style.css">
 </head>
@@ -12,12 +12,12 @@
 
   <div id="loginOverlay" class="overlay active">
     <div class="glass-card login-box">
-      <div class="icon-lock"><i class="fas fa-fingerprint"></i></div>
-      <h2>Secured Access</h2>
-      <p>Masukkan Password Akses</p>
+      <div class="icon-lock"><i class="fas fa-shield-alt"></i></div>
+      <h2>Akses Terbatas</h2>
+      <p>Masukkan Kunci Keamanan</p>
       <input type="password" id="passInput" placeholder="Password..." />
       <button onclick="login()" class="btn-glow">Buka Dashboard</button>
-      <p id="errorMsg" class="error-text">Password Salah!</p>
+      <p id="errorMsg" class="error-text">Akses Ditolak!</p>
     </div>
   </div>
 
@@ -28,32 +28,47 @@
         <i class="fas fa-rocket"></i> DropHunt
       </div>
       <ul>
-        <li onclick="nav('input')" class="active"><i class="fas fa-plus-square"></i> Input Baru</li>
-        <li onclick="nav('daily')"><i class="fas fa-bolt"></i> Daily Tasks</li>
-        <li onclick="nav('recap')"><i class="fas fa-list-alt"></i> Database</li>
+        <li onclick="nav('input')" class="active" data-target="input"><i class="fas fa-plus-square"></i> Input Baru</li>
+        <li onclick="nav('daily')" data-target="daily"><i class="fas fa-bolt"></i> Daily Tasks</li>
+        <li onclick="nav('recap')" data-target="recap"><i class="fas fa-database"></i> Database</li>
       </ul>
       <div class="user-profile">
-        <small>Admin Mode • v2.0</small>
+        <small>v3.0 Mobile Ready</small>
       </div>
     </nav>
 
     <main>
       
+      <div class="dashboard-stats fade-in">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+          <div><small>Total Proyek</small><h3 id="statTotal">0</h3></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-green"><i class="fas fa-check-circle"></i></div>
+          <div><small>Selesai (Daily)</small><h3 id="statDone">0/0</h3></div>
+        </div>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Cari garapan..." onkeyup="filterData()">
+        </div>
+      </div>
+
       <section id="input" class="fade-in">
         <div class="header-box">
-          <h1>Input Data Baru</h1>
-          <p>Masukkan target airdrop atau tugas harian baru.</p>
+          <h1>Input Data</h1>
+          <p>Tambahkan target airdrop baru.</p>
         </div>
         <form id="addForm" class="glass-card form-container">
           <div class="form-group">
             <label>Nama Proyek</label>
-            <input type="text" id="nama" placeholder="Contoh: Monad, Berachain" required>
+            <input type="text" id="nama" placeholder="Contoh: Monad" required>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label>Kategori</label>
               <select id="kategori">
-                <option value="Regular">Regular (One-time)</option>
+                <option value="Regular">Regular (Sekali)</option>
                 <option value="Daily">Daily (Rutin)</option>
               </select>
             </div>
@@ -72,7 +87,7 @@
           </div>
           <div class="form-group">
             <label>Catatan & Link</label>
-            <textarea id="note" rows="3" placeholder="Paste link faucet, bridge, atau panduan di sini..."></textarea>
+            <textarea id="note" rows="3" placeholder="Link faucet, wallet address, dll..."></textarea>
           </div>
           <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan Data</button>
         </form>
@@ -80,19 +95,25 @@
 
       <section id="daily" style="display:none;" class="fade-in">
         <div class="header-box">
-          <h1>Daily Routine</h1>
-          <p>Tugas ini akan reset otomatis setiap hari (00:00).</p>
-        </div>
-        <div id="dailyList" class="grid-container">
+          <div style="display:flex; justify-content:space-between; align-items:end;">
+            <div><h1>Daily Routine</h1><p>Progress Hari Ini:</p></div>
+            <h2 id="progressText" style="color:var(--primary)">0%</h2>
           </div>
+          <div class="progress-track"><div id="progressBar" class="progress-fill"></div></div>
+        </div>
+        
+        <div id="dailyList" class="grid-container"></div>
+        
+        <div id="emptyDaily" class="empty-state" style="display:none;">
+          <i class="fas fa-coffee"></i>
+          <p>Semua tugas harian selesai!</p>
+        </div>
       </section>
 
       <section id="recap" style="display:none;" class="fade-in">
-        <div class="header-box">
-          <h1>Database Airdrop</h1>
-          <p>List lengkap semua garapan.</p>
-        </div>
-        <div class="glass-card table-responsive">
+        <div class="header-box"><h1>Database</h1><p>Semua data tersimpan di sini.</p></div>
+        
+        <div class="glass-card table-wrapper">
           <table id="recapTable">
             <thead>
               <tr>
@@ -100,37 +121,45 @@
                 <th>Tipe</th>
                 <th>Status</th>
                 <th>Deadline</th>
-                <th>Catatan / Link</th>
+                <th>Catatan</th>
                 <th>Aksi</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
+          <div id="emptyRecap" class="empty-state" style="display:none;">
+            <p>Data tidak ditemukan.</p>
+          </div>
         </div>
       </section>
     </main>
+
+    <nav class="bottom-nav">
+      <div class="nav-item active" onclick="nav('input')" data-target="input">
+        <i class="fas fa-plus-square"></i><span>Input</span>
+      </div>
+      <div class="nav-item" onclick="nav('daily')" data-target="daily">
+        <i class="fas fa-bolt"></i><span>Daily</span>
+      </div>
+      <div class="nav-item" onclick="nav('recap')" data-target="recap">
+        <i class="fas fa-database"></i><span>Data</span>
+      </div>
+    </nav>
   </div>
 
   <div id="editModal" class="modal-overlay">
     <div class="glass-card modal-box">
-      <h2>Edit Data</h2>
+      <h3>Edit Data</h3>
       <input type="hidden" id="editId">
-      <div class="form-group">
-        <label>Nama Proyek</label>
-        <input type="text" id="editNama">
-      </div>
-      <div class="form-group">
-        <label>Status</label>
+      <div class="form-group"><label>Nama</label><input type="text" id="editNama"></div>
+      <div class="form-group"><label>Status</label>
         <select id="editStatus">
-          <option value="Garap">Sedang Digarap</option>
+          <option value="Garap">Garap</option>
           <option value="Pending">Pending</option>
-          <option value="Done">Selesai</option>
+          <option value="Done">Done</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>Catatan & Link</label>
-        <textarea id="editNote" rows="4"></textarea>
-      </div>
+      <div class="form-group"><label>Catatan</label><textarea id="editNote" rows="4"></textarea></div>
       <div class="modal-actions">
         <button onclick="closeEdit()" class="btn-secondary">Batal</button>
         <button onclick="saveUpdate()" class="btn-primary">Update</button>
