@@ -3,64 +3,141 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Airdrop Manager</title>
+  <title>Airdrop Manager Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="/src/style.css">
 </head>
 <body>
-  <div id="loginOverlay">
-    <div class="login-box">
-      <h2>🔒 Login Akses</h2>
-      <input type="password" id="passInput" placeholder="Masukkan Password..." />
-      <button onclick="login()">Masuk</button>
-      <p id="errorMsg" style="color:red;display:none;margin-top:10px;">Password Salah!</p>
+
+  <div id="loginOverlay" class="overlay active">
+    <div class="glass-card login-box">
+      <div class="icon-lock"><i class="fas fa-fingerprint"></i></div>
+      <h2>Secured Access</h2>
+      <p>Masukkan Kunci Akses Anda</p>
+      <input type="password" id="passInput" placeholder="Password..." />
+      <button onclick="login()" class="btn-glow">Buka Dashboard</button>
+      <p id="errorMsg" class="error-text">Password Salah!</p>
     </div>
   </div>
 
-  <div id="app" style="display:none;">
+  <div id="app" class="app-layout" style="display:none;">
+    
     <nav class="sidebar">
-      <h2>🚀 DropHunt</h2>
+      <div class="brand">
+        <i class="fas fa-rocket"></i> DropHunt
+      </div>
       <ul>
-        <li onclick="nav('input')" class="active"><i class="fas fa-plus"></i> Input</li>
-        <li onclick="nav('daily')"><i class="fas fa-clock"></i> Daily</li>
-        <li onclick="nav('recap')"><i class="fas fa-table"></i> Rekap</li>
+        <li onclick="nav('input')" class="active"><i class="fas fa-plus-square"></i> Input Baru</li>
+        <li onclick="nav('daily')"><i class="fas fa-bolt"></i> Daily Tasks</li>
+        <li onclick="nav('recap')"><i class="fas fa-list-alt"></i> Database</li>
       </ul>
+      <div class="user-profile">
+        <span>Admin Mode</span>
+      </div>
     </nav>
+
     <main>
-      <section id="input">
-        <h1>Input Data</h1>
-        <form id="addForm">
-          <input type="text" id="nama" placeholder="Nama Proyek" required>
-          <select id="kategori">
-            <option value="Regular">Regular</option>
-            <option value="Daily">Daily</option>
-          </select>
-          <select id="status">
-            <option value="Garap">Garap</option>
-            <option value="Done">Done</option>
-          </select>
-          <input type="date" id="deadline">
-          <textarea id="note" placeholder="Catatan"></textarea>
-          <button type="submit">Simpan</button>
+      <section id="input" class="fade-in">
+        <div class="header-box">
+          <h1>Input Data Baru</h1>
+          <p>Tambahkan target airdrop baru ke database.</p>
+        </div>
+        <form id="addForm" class="glass-card form-container">
+          <div class="form-group">
+            <label>Nama Proyek</label>
+            <input type="text" id="nama" placeholder="Contoh: ZkSync Era" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Kategori</label>
+              <select id="kategori">
+                <option value="Regular">Regular (One-time)</option>
+                <option value="Daily">Daily (Rutin)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select id="status">
+                <option value="Garap">🔥 Sedang Digarap</option>
+                <option value="Done">✅ Selesai / Landing</option>
+                <option value="Pending">⏳ Pending</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Deadline</label>
+            <input type="date" id="deadline">
+          </div>
+          <div class="form-group">
+            <label>Catatan / Link</label>
+            <textarea id="note" rows="3" placeholder="Link faucet, bridge, task..."></textarea>
+          </div>
+          <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan Data</button>
         </form>
       </section>
 
-      <section id="daily" style="display:none;">
-        <h1>Daily Routine</h1>
-        <div id="dailyList" class="grid"></div>
+      <section id="daily" style="display:none;" class="fade-in">
+        <div class="header-box">
+          <h1>Daily Routine</h1>
+          <p>Reset otomatis setiap jam 00:00 UTC.</p>
+        </div>
+        <div id="dailyList" class="grid-container">
+          </div>
       </section>
 
-      <section id="recap" style="display:none;">
-        <h1>Rekapan</h1>
-        <div style="overflow-x:auto;">
+      <section id="recap" style="display:none;" class="fade-in">
+        <div class="header-box">
+          <h1>Database Airdrop</h1>
+          <p>Kelola semua data garapan Anda.</p>
+        </div>
+        <div class="glass-card table-responsive">
           <table id="recapTable">
-            <thead><tr><th>Proyek</th><th>Status</th><th>Action</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Proyek</th>
+                <th>Kategori</th>
+                <th>Status</th>
+                <th>Deadline</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
             <tbody></tbody>
           </table>
         </div>
       </section>
     </main>
   </div>
+
+  <div id="editModal" class="modal-overlay">
+    <div class="glass-card modal-box">
+      <h2>Edit Data</h2>
+      <input type="hidden" id="editId">
+      <div class="form-group">
+        <label>Nama Proyek</label>
+        <input type="text" id="editNama">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="editStatus">
+          <option value="Garap">Sedang Digarap</option>
+          <option value="Done">Selesai</option>
+          <option value="Pending">Pending</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Catatan</label>
+        <textarea id="editNote" rows="3"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button onclick="closeEdit()" class="btn-secondary">Batal</button>
+        <button onclick="saveUpdate()" class="btn-primary">Update</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastBox"></div>
+
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
